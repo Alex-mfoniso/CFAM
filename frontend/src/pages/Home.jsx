@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { assets } from "../assets/asset";
 import EventSlider from "../components/EventSlider";
 import ChurchPage from "../components/ChurchPage";
-import Sermon from "../components/sermon";
+import Sermon from "../components/Sermon";
 import Testimonial from "../components/Testimonial";
 
 const Home = () => {
@@ -66,7 +66,7 @@ const Home = () => {
       <EventSlider />
       <hr className="" />
       <ChurchPage />
-      <Sermon />
+      <Sermon/>
       <Testimonial />
     </div>
   );
