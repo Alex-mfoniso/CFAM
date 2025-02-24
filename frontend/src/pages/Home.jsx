@@ -69,6 +69,7 @@ const Home = () => {
       <Sermon/>
       <Testimonial />
     </div>
+    // 
   );
 };
 
