@@ -62,7 +62,7 @@ const Sermon = () => {
         </div>
 
         {/* Buttons */}
-        <div className="flex justify-center space-x-4">
+        <div className="flex justify-center space-x-4 mb-[2rem]">
           <a
             className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-all duration-300"
             href="#"
@@ -70,7 +70,7 @@ const Sermon = () => {
             GET INVOLVED
           </a>
           <a
-            className="border border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-black transition-all duration-300"
+            className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-all duration-300"
             href="#"
           >
             OUR MINISTRIES
