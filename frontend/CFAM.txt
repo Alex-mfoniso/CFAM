@@ -22,6 +22,17 @@ Event Calendar (Google Calendar API or a custom scheduling system).
 Admin Dashboard (Separate or within the main site).
 Do you have specific features in mind for the church website and app?
 
+
+
+
+
+
+
+
+
+You said:
+What will the web contain and the app respectively 
+ChatGPT said:
 Church Website (React)
 The website will primarily serve as an informational and engagement hub. It can include:
 
