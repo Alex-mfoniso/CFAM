@@ -10,7 +10,7 @@ const events = [
     title: "Sunday Service",
     description: "Join us every Sunday at 10 AM for an uplifting service.",
     link: "/events/sunday-service",
-    image: assets.church
+    image: assets.church,
   },
   {
     id: 2,
@@ -135,15 +135,13 @@ const EventSlider = () => {
           </div>
         </div>
         <div className="flex justify-center mt-8">
-  <Link
-    to="/events"
-    className="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-  >
-    Browse More Events
-  </Link>
-</div>
-
-        
+          <Link
+            to="/events"
+            className="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+          >
+            Browse More Events
+          </Link>
+        </div>
       </div>
     </section>
   );
