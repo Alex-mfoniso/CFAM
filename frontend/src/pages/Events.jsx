@@ -1,8 +1,13 @@
 import React from 'react'
+import ChurchPage from '../components/ChurchPage'
 
 const Events = () => {
   return (
-    <div>Events</div>
+    <div>
+    {/* <div>Events</div> */}
+    <ChurchPage />
+    
+    </div>
   )
 }
 

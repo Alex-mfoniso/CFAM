@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider, ProtectedRoute } from "../contexts/AuthContext";
 import Navbar from "../components/Navbar";
 import Loading from "../components/Loading";
+import Footer from "../components/Footer";
 
 // Lazy-loaded pages
 const Home = lazy(() => import("../pages/Home"));
@@ -60,6 +61,7 @@ const AppRoutes = () => {
   <Route path="*" element={<NotFound />} />
             
           </Routes>
+          <Footer />
         </Suspense>
         {/* )  */}
         {/* add a } here */}
