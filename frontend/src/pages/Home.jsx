@@ -4,7 +4,7 @@ import EventSlider from "../components/EventSlider";
 import ChurchPage from "../components/ChurchPage";
 import Sermon from "../components/Sermon";
 import Testimonial from "../components/Testimonial";
-import Footer from "../components/Footer";
+
 
 const Home = () => {
   return (
@@ -16,9 +16,9 @@ const Home = () => {
       <ChurchPage />
       <Sermon />
       <Testimonial />
-      <Footer />
+    
     </div>
-    //
+
   );
 };
 
