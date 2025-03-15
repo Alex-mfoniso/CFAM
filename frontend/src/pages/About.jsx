@@ -3,8 +3,7 @@ import React from "react";
 
 const About = () => {
 
-  return <div>About</div>;
-};
+
 
   return (
     <div className='pl-[50px] pt-[30px] bg-black pb-[60px]'>
@@ -16,5 +15,6 @@ const About = () => {
       </div>
     </div>
   )
+};
 
 export default About;

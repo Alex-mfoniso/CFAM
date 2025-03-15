@@ -1,30 +1,27 @@
 import { useState } from "react";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api"; 
-import { FaFacebook, FaInstagram, FaTiktok, FaEnvelope, FaPhone } from "react-icons/fa";
+// import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api"; 
+// import { FaFacebook, FaInstagram, FaTiktok, FaEnvelope, FaPhone } from "react-icons/fa";
 
-// Google Maps styling and coordinates
 const mapContainerStyle = {
   width: "100%",
   height: "300px",
 };
 
-// Replace with your actual location coordinates
+
 const center = {
-  lat: 40.7128, // Example: New York City
+  lat: 40.7128, 
   lng: -74.0060,
 };
 
-// Replace with your Google Maps API key
+
 const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
 
 const Contact = () => {
-  // State to handle form inputs
+ 
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
 
-  // Handles input changes
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  // Handles form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     alert("Message Sent!");
@@ -32,11 +29,11 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-6">
-      {/* Contact Section Container */}
+{/*    
       <div className="max-w-4xl w-full bg-white p-8 rounded-lg shadow-lg">
         <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Contact Us</h2>
 
-        {/* Contact Form */}
+       
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-gray-700 font-medium mb-2">Name</label>
@@ -82,10 +79,10 @@ const Contact = () => {
           </button>
         </form>
 
-        {/* Address Section */}
+      
         <div className="mt-8 text-center">
           <h3 className="text-xl font-semibold text-gray-800">Our Address</h3>
-          {/* Google Maps Integration */}
+          
           <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
             <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={12}>
               <Marker position={center} />
@@ -93,7 +90,7 @@ const Contact = () => {
           </LoadScript>
           <p className="mt-2 text-gray-700">123 Main Street, New York, NY 10001</p>
 
-          {/* Phone and Email */}
+     
           <div className="mt-4 flex items-center justify-center space-x-4 text-gray-700">
             <FaPhone className="text-xl" />
             <span>+1 (555) 123-4567</span>
@@ -104,7 +101,7 @@ const Contact = () => {
           </div>
         </div>
 
-        {/* Social Links */}
+      
         <div className="mt-6 flex justify-center space-x-6">
           <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 text-2xl hover:scale-110 transition">
             <FaFacebook />
@@ -116,7 +113,7 @@ const Contact = () => {
             <FaTiktok />
           </a>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
