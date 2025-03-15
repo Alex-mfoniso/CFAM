@@ -1,6 +1,8 @@
 import { lazy, Suspense, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider, ProtectedRoute } from "../contexts/AuthContext";
+import { AuthProvider } from "../contexts/AuthContext";
+import ProtectedRoute from "../components/ProtectedRoute"; // ✅ Import from the correct file
+
 import Navbar from "../components/Navbar";
 import Loading from "../components/Loading";
 import Footer from "../components/Footer";

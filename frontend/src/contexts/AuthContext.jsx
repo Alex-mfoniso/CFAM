@@ -1,68 +1,65 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
-import { auth } from "../firebase"; // Ensure Firebase is configured
 import { 
-  createUserWithEmailAndPassword, 
+  getAuth, 
   signInWithEmailAndPassword, 
-  signOut, 
-  onAuthStateChanged 
+  createUserWithEmailAndPassword, 
+  sendPasswordResetEmail, 
+  sendEmailVerification, 
+  signOut,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
+import { app } from "../firebase"; // Ensure Firebase is configured
 
 const AuthContext = createContext();
 
-// Custom hook to access AuthContext
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
+  const auth = getAuth(app);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for user authentication state changes
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-        localStorage.setItem("user", JSON.stringify(currentUser));
-      } else {
-        setUser(null);
-        localStorage.removeItem("user");
-      }
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
     });
-
     return () => unsubscribe();
-  }, []);
+  }, [auth]);
 
-  // Sign Up with Firebase
+  // Email/Password Signup with Email Verification
   const signup = async (email, password) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    setUser(userCredential.user);
-    localStorage.setItem("user", JSON.stringify(userCredential.user));
-    return userCredential.user;
+    await sendEmailVerification(userCredential.user);
+    alert("Verification email sent! Please check your inbox.");
   };
 
-  // Login with Firebase
+  // Google Authentication
+  const googleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+  };
+
+  // Email/Password Login
   const login = async (email, password) => {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    setUser(userCredential.user);
-    localStorage.setItem("user", JSON.stringify(userCredential.user));
-    return userCredential.user;
+    await signInWithEmailAndPassword(auth, email, password);
   };
 
-  // Logout function
+  // Password Reset
+  const resetPassword = async (email) => {
+    await sendPasswordResetEmail(auth, email);
+    alert("Password reset email sent!");
+  };
+
+  // Logout
   const logout = async () => {
     await signOut(auth);
-    setUser(null);
-    localStorage.removeItem("user");
   };
 
   return (
-    <AuthContext.Provider value={{ user, signup, login, logout }}>
-      {children}
+    <AuthContext.Provider value={{ user, signup, login, googleSignIn, resetPassword, logout }}>
+      {!loading && children}
     </AuthContext.Provider>
   );
-};
-
-// Protected Route Component
-export const ProtectedRoute = ({ children }) => {
-  const { user } = useAuth();
-  return user ? children : <Navigate to="/login" replace />;
 };

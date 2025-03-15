@@ -4,6 +4,7 @@ import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { app } from "../firebase"; // Ensure you have firebase.js configured
 import { LogOut, Edit } from "lucide-react";
+import { assets } from "../assets/asset";
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
@@ -61,7 +62,7 @@ const Dashboard = () => {
         {/* Profile Picture */}
         <div className="relative">
           <img
-            src={profilePic || "https://via.placeholder.com/150"}
+            src={profilePic || assets.profile}
             alt="Profile"
             className="w-24 h-24 rounded-full mx-auto mb-4 object-cover border"
           />
