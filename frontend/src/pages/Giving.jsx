@@ -1,17 +1,116 @@
+import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { CheckCircle, Lock, QrCode } from "lucide-react";
 
 const Giving = () => {
-  const { user } = useAuth();
+  const { user } = useAuth(); // Get logged-in user
+  const [amount, setAmount] = useState("");
+  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [frequency, setFrequency] = useState("one-time");
+  const [paymentMethod, setPaymentMethod] = useState("stripe");
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
+  const suggestedAmounts = [10, 50, 100, 500];
+
+  const handleDonate = () => {
+    if (!user) {
+      alert("You must be logged in to donate.");
+      return;
+    }
+    // Process payment here (backend logic needed)
+    console.log({ amount, isAnonymous, frequency, paymentMethod });
+  };
 
   return (
-    <div>
-      <h2>Giving Page</h2>
-      {/* Donation form here */}
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
+      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg">
+        <h2 className="text-2xl font-bold text-center mb-4">Give to the Church</h2>
+
+        {!user && (
+          <p className="text-center text-red-500 mb-4">
+            <Lock className="inline w-5 h-5" /> You must <Link to="/login" className="text-blue-600 underline">log in</Link> before donating.
+          </p>
+        )}
+
+        {/* Suggested Amounts */}
+        <div className="flex justify-center gap-3 mb-4">
+          {suggestedAmounts.map((amt) => (
+            <button
+              key={amt}
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+              onClick={() => setAmount(amt)}
+            >
+              ${amt}
+            </button>
+          ))}
+        </div>
+
+        {/* Custom Amount Input */}
+        <input
+          type="number"
+          placeholder="Enter custom amount"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          className="w-full border px-4 py-2 rounded-md mb-4"
+        />
+
+        {/* Frequency Selection */}
+        <label className="block mb-2">Donation Type:</label>
+        <select
+          value={frequency}
+          onChange={(e) => setFrequency(e.target.value)}
+          className="w-full border px-4 py-2 rounded-md mb-4"
+        >
+          <option value="one-time">One-Time</option>
+          <option value="monthly">Monthly (Recurring)</option>
+        </select>
+
+        {/* Anonymous Donation Toggle */}
+        <div className="flex items-center gap-2 mb-4">
+          <input
+            type="checkbox"
+            checked={isAnonymous}
+            onChange={() => setIsAnonymous(!isAnonymous)}
+            className="w-5 h-5"
+          />
+          <label>Give Anonymously</label>
+        </div>
+
+        {/* Payment Method Selection */}
+        <label className="block mb-2">Payment Method:</label>
+        <select
+          value={paymentMethod}
+          onChange={(e) => setPaymentMethod(e.target.value)}
+          className="w-full border px-4 py-2 rounded-md mb-4"
+        >
+          <option value="stripe">Stripe (Card)</option>
+          <option value="flutterwave">Flutterwave (Bank/Mobile Money)</option>
+          <option value="paystack">Paystack (Local Payments)</option>
+        </select>
+
+        {/* QR Code Button */}
+        <button className="flex items-center justify-center bg-gray-200 py-2 px-4 rounded-md w-full mb-4">
+          <QrCode className="w-5 h-5 mr-2" />
+          Generate QR Code
+        </button>
+
+        {/* Donate Button */}
+        <button
+          onClick={handleDonate}
+          disabled={!amount || !user}
+          className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 disabled:bg-gray-400"
+        >
+          Donate Now
+        </button>
+      </div>
+
+      {/* Transaction History (Placeholder) */}
+      <div className="mt-8 w-full max-w-lg">
+        <h3 className="text-lg font-bold mb-3">Donation History</h3>
+        <div className="bg-white p-4 shadow-md rounded-lg">
+          <p className="text-gray-500 text-center">No donations yet.</p>
+        </div>
+      </div>
     </div>
   );
 };

@@ -14,15 +14,44 @@ const Signup = () => {
     e.preventDefault();
     setError("");
 
+    if (password.length < 6) {
+      return setError("Password must be at least 6 characters.");
+    }
+
     if (password !== confirmPassword) {
       return setError("Passwords do not match!");
     }
 
     try {
       await signup(email, password);
-      navigate("/dashboard"); // Redirect after signup
+      navigate("/dashboard"); // Redirect after successful signup
     } catch (err) {
-      setError("Failed to create an account.");
+      handleFirebaseError(err);
+    }
+  };
+
+  const handleFirebaseError = (err) => {
+    console.error("Signup error:", err.message);
+
+    switch (err.code) {
+      case "auth/email-already-in-use":
+        setError("This email is already registered. Try logging in.");
+        break;
+      case "auth/invalid-email":
+        setError("Invalid email format. Please enter a valid email.");
+        break;
+      case "auth/weak-password":
+        setError("Weak password. Use at least 6 characters.");
+        break;
+      case "auth/network-request-failed":
+        setError("Network error. Check your internet connection.");
+        break;
+      case "auth/internal-error":
+        setError("Something went wrong. Please try again.");
+        break;
+      default:
+        setError("Failed to create an account. Please try again.");
+        break;
     }
   };
 
