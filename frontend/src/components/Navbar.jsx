@@ -80,7 +80,7 @@ const Navbar = () => {
             transition={{ duration: 0.4, ease: "easeInOut" }}
             className="md:hidden navbar shadow-md overflow-hidden"
           >
-            <div className="flex flex-col items-center text-center space-y-4 px-6 py-4">
+            <div className="flex flex-col items-start space-y-4 px-6 py-4"> {/* Changed items-center to items-start */}
               <Link to="/" className="hover:text-blue-600" onClick={() => setIsOpen(false)}>Home</Link>
               <Link to="/about" className="hover:text-blue-600" onClick={() => setIsOpen(false)}>About</Link>
               <Link to="/sermons" className="hover:text-blue-600" onClick={() => setIsOpen(false)}>Sermons</Link>
@@ -92,7 +92,7 @@ const Navbar = () => {
               {!user ? (
                 <>
                   <Link to="/login" className="hover:text-blue-600" onClick={() => setIsOpen(false)}>Login</Link>
-                  <Link to="/signup" className="button px-4 py-2 rounded-md hover:bg-blue-700 transition text-center" onClick={() => setIsOpen(false)}>
+                  <Link to="/signup" className="button px-4 py-2 rounded-md hover:bg-blue-700 transition text-left" onClick={() => setIsOpen(false)}>
                     Sign Up
                   </Link>
                 </>
