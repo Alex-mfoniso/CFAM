@@ -5,7 +5,10 @@ import Navbar from "../components/Navbar";
 import Loading from "../components/Loading";
 import Footer from "../components/Footer";
 
+
 // Lazy-loaded pages
+const Login = lazy(() => import("../pages/Login"));
+const Signup = lazy(() => import("../pages/Signup"));
 const Home = lazy(() => import("../pages/Home"));
 const About = lazy(() => import("../pages/About"));
 const Sermons = lazy(() => import("../pages/Sermons"));
@@ -36,6 +39,8 @@ const AppRoutes = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="/sermons" element={<Sermons />} />
             <Route path="/events" element={<Events />} />
             <Route path="/events/:eventId" element={<EventDetail />} />
