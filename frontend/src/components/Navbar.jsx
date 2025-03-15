@@ -92,7 +92,7 @@ const Navbar = () => {
               {!user ? (
                 <>
                   <Link to="/login" className="hover:text-blue-600" onClick={() => setIsOpen(false)}>Login</Link>
-                  <Link to="/signup" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition text-center" onClick={() => setIsOpen(false)}>
+                  <Link to="/signup" className="button px-4 py-2 rounded-md hover:bg-blue-700 transition text-center" onClick={() => setIsOpen(false)}>
                     Sign Up
                   </Link>
                 </>
