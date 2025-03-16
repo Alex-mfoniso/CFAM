@@ -1,14 +1,23 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
-import { assets } from '../assets/asset';
+import { Link, useNavigate } from "react-router-dom";
+import { Menu, X, User, LogOut } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { assets } from "../assets/asset";
+import { useAuth } from "../contexts/AuthContext"; // Import Auth context
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, logout } = useAuth(); // Get user & logout function
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/"); // Redirect to home after logout
+    setIsOpen(false); // Close the menu
+  };
 
   return (
-    <nav className="bg-white shadow-md navbar">
+    <nav className="shadow-md navbar">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         
         {/* Logo */}
@@ -24,9 +33,32 @@ const Navbar = () => {
           <Link to="/events" className="hover:text-blue-600">Events</Link>
           <Link to="/giving" className="hover:text-blue-600">Giving</Link>
           <Link to="/contact" className="hover:text-blue-600">Contact</Link>
+
+          {/* Authentication Links */}
+          {!user ? (
+            <>
+              <Link to="/login" className="hover:text-blue-600">Login</Link>
+              <Link to="/signup" className="bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700 transition">
+                Sign Up
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/dashboard" className="flex items-center gap-2 hover:text-blue-600">
+                <User className="w-6 h-6" />
+               Profile
+              </Link>
+              <button 
+                onClick={handleLogout}
+                className="text-red-600 hover:text-red-700 flex items-center gap-2"
+              >
+                {/* <LogOut size={16} /> Logout */}
+              </button>
+            </>
+          )}
         </div>
 
-        {/* Mobile Menu Button with Animation */}
+        {/* Mobile Menu Button */}
         <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
           <motion.div 
             initial={{ rotate: 0 }} 
@@ -38,7 +70,7 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu Animation */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -46,15 +78,38 @@ const Navbar = () => {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.4, ease: "easeInOut" }}
-            className="md:hidden bg-white shadow-md overflow-hidden"
+            className="md:hidden navbar shadow-md overflow-hidden"
           >
-            <div className="flex flex-col space-y-4 px-6 py-4 navbar" >
+            <div className="flex flex-col items-start space-y-4 px-6 py-4"> {/* Changed items-center to items-start */}
               <Link to="/" className="hover:text-blue-600" onClick={() => setIsOpen(false)}>Home</Link>
               <Link to="/about" className="hover:text-blue-600" onClick={() => setIsOpen(false)}>About</Link>
               <Link to="/sermons" className="hover:text-blue-600" onClick={() => setIsOpen(false)}>Sermons</Link>
               <Link to="/events" className="hover:text-blue-600" onClick={() => setIsOpen(false)}>Events</Link>
               <Link to="/giving" className="hover:text-blue-600" onClick={() => setIsOpen(false)}>Giving</Link>
               <Link to="/contact" className="hover:text-blue-600" onClick={() => setIsOpen(false)}>Contact</Link>
+
+              {/* Authentication Links */}
+              {!user ? (
+                <>
+                  <Link to="/login" className="hover:text-blue-600" onClick={() => setIsOpen(false)}>Login</Link>
+                  <Link to="/signup" className="button px-4 py-2 rounded-md hover:bg-blue-700 transition text-left" onClick={() => setIsOpen(false)}>
+                    Sign Up
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/dashboard" className="hover:text-blue-600 flex items-center gap-2" onClick={() => setIsOpen(false)}>
+                    <User className="w-6 h-6" />
+                  Profile
+                  </Link>
+                  <button   
+                    onClick={handleLogout}
+                    className="text-red-600 text-left w-full px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
+                  >
+                    {/* <LogOut size={16} /> Logout */}
+                  </button>
+                </>
+              )}
             </div>
           </motion.div>
         )}
@@ -62,6 +117,5 @@ const Navbar = () => {
     </nav>
   );
 };
-// ss
 
 export default Navbar;

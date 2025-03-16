@@ -1,120 +1,82 @@
-import React, { useState } from "react";
-import { FaCheck, FaLock, FaQrcode, FaGlobe } from "react-icons/fa";
-
-// Supported currencies
-const currencies = {
-  USD: { symbol: "$", rates: 1 }, // Base currency
-  NGN: { symbol: "₦", rates: 1300 }, // Example conversion (1 USD = 1300 NGN)
-  KES: { symbol: "KSh", rates: 160 }, // Example conversion (1 USD = 160 KES)
-};
+import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { Link } from "react-router-dom";
+import { CheckCircle, Lock, QrCode } from "lucide-react";
 
 const Giving = () => {
-  const [amount, setAmount] = useState(50);
-  const [currency, setCurrency] = useState("USD");
-  const [isRecurring, setIsRecurring] = useState(false);
+  const { user } = useAuth(); // Get logged-in user
+  const [amount, setAmount] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [frequency, setFrequency] = useState("one-time");
+  const [paymentMethod, setPaymentMethod] = useState("stripe");
 
-  // Convert amount to selected currency
-  const convertedAmount = (amount * currencies[currency].rates).toFixed(2);
+  const suggestedAmounts = [10, 50, 100, 500];
+
+  const handleDonate = () => {
+    if (!user) {
+      alert("You must be logged in to donate.");
+      return;
+    }
+    // Process payment here (backend logic needed)
+    console.log({ amount, isAnonymous, frequency, paymentMethod });
+  };
 
   return (
-    <div className="bg-gradient-to-br from-gray-900 to-black min-h-screen flex justify-center items-center p-6">
-      <div className="max-w-3xl w-full bg-white p-8 rounded-xl shadow-2xl">
-        {/* Heading */}
-        <h2 className="text-4xl font-bold text-center text-gray-900 mb-4">
-          Support Our Mission
-        </h2>
-        <p className="text-center text-gray-600 mb-8">
-          Your donation helps us continue spreading love and faith.
-        </p>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
+      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg">
+        <h2 className="text-2xl font-bold text-center mb-4">Give to the Church</h2>
 
-        {/* Currency Selector */}
-        <div className="flex justify-center mb-6">
-          <div className="relative">
-            <FaGlobe className="absolute left-3 top-3 text-gray-500" />
-            <select
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value)}
-              className="appearance-none border border-gray-300 text-gray-700 px-10 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-            >
-              {Object.keys(currencies).map((cur) => (
-                <option key={cur} value={cur}>
-                  {cur}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+        {!user && (
+          <p className="text-center text-red-500 mb-4">
+            <Lock className="inline w-5 h-5" /> You must <Link to="/login" className="text-blue-600 underline">log in</Link> before donating.
+          </p>
+        )}
 
         {/* Suggested Amounts */}
-        <div className="flex justify-center gap-3 mb-6">
-          {[10, 50, 100].map((value) => (
+        <div className="flex justify-center gap-3 mb-4">
+          {suggestedAmounts.map((amt) => (
             <button
-              key={value}
-              onClick={() => setAmount(value)}
-              className={`px-6 py-3 rounded-lg border-2 transition-all ${
-                amount === value
-                  ? "bg-black text-white border-black"
-                  : "border-gray-300 text-gray-700 hover:border-black hover:bg-gray-50"
-              }`}
+              key={amt}
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+              onClick={() => setAmount(amt)}
             >
-              {currencies[currency].symbol}
-              {(value * currencies[currency].rates).toFixed(2)}
+              ${amt}
             </button>
           ))}
-          {/* Custom Input */}
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="px-4 py-3 border-2 border-gray-300 rounded-lg w-24 focus:outline-none focus:ring-2 focus:ring-black"
-            placeholder="Custom"
-          />
         </div>
 
-        {/* One-time vs Recurring */}
-        <div className="flex justify-center gap-4 mb-8">
-          <button
-            onClick={() => setIsRecurring(false)}
-            className={`px-6 py-3 rounded-lg border-2 transition-all ${
-              !isRecurring
-                ? "bg-black text-white border-black"
-                : "border-gray-300 text-gray-700 hover:border-black hover:bg-gray-50"
-            }`}
-          >
-            One-time
-          </button>
-          <button
-            onClick={() => setIsRecurring(true)}
-            className={`px-6 py-3 rounded-lg border-2 transition-all ${
-              isRecurring
-                ? "bg-black text-white border-black"
-                : "border-gray-300 text-gray-700 hover:border-black hover:bg-gray-50"
-            }`}
-          >
-            Monthly
-          </button>
-        </div>
+        {/* Custom Amount Input */}
+        <input
+          type="number"
+          placeholder="Enter custom amount"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          className="w-full border px-4 py-2 rounded-md mb-4"
+        />
 
-        {/* Anonymous Giving */}
-        <label className="flex items-center gap-3 text-gray-700 mb-8">
+        {/* Frequency Selection */}
+        <label className="block mb-2">Donation Type:</label>
+        <select
+          value={frequency}
+          onChange={(e) => setFrequency(e.target.value)}
+          className="w-full border px-4 py-2 rounded-md mb-4"
+        >
+          <option value="one-time">One-Time</option>
+          <option value="monthly">Monthly (Recurring)</option>
+        </select>
+
+        {/* Anonymous Donation Toggle */}
+        <div className="flex items-center gap-2 mb-4">
           <input
             type="checkbox"
             checked={isAnonymous}
             onChange={() => setIsAnonymous(!isAnonymous)}
-            className="w-5 h-5 rounded border-2 border-gray-300 focus:ring-black"
+            className="w-5 h-5"
           />
-          Give Anonymously
-        </label>
-
-        {/* QR Code Section */}
-        <div className="flex justify-center mb-8">
-          <div className="bg-gray-100 p-6 rounded-xl flex flex-col items-center">
-            <FaQrcode className="text-gray-700 text-5xl mb-4" />
-            <span className="text-gray-700 font-medium">Scan to Donate</span>
-          </div>
+          <label>Give Anonymously</label>
         </div>
 
+<<<<<<< HEAD
         {/* Donate Button */}
         <button className="w-full bg-black text-white py-4 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-800 transition-all" onClick={() => handleDonation("stripe")}>
 
@@ -122,14 +84,41 @@ const Giving = () => {
           <FaLock />
           Donate {currencies[currency].symbol}
           {convertedAmount} Securely
+=======
+        {/* Payment Method Selection */}
+        <label className="block mb-2">Payment Method:</label>
+        <select
+          value={paymentMethod}
+          onChange={(e) => setPaymentMethod(e.target.value)}
+          className="w-full border px-4 py-2 rounded-md mb-4"
+        >
+          <option value="stripe">Stripe (Card)</option>
+          <option value="flutterwave">Flutterwave (Bank/Mobile Money)</option>
+          <option value="paystack">Paystack (Local Payments)</option>
+        </select>
+
+        {/* QR Code Button */}
+        <button className="flex items-center justify-center bg-gray-200 py-2 px-4 rounded-md w-full mb-4">
+          <QrCode className="w-5 h-5 mr-2" />
+          Generate QR Code
+>>>>>>> 7fc66ce888792a9ed7607379d5bf4c2b27b6a2f7
         </button>
 
-        {/* Testimonials */}
-        <div className="mt-8 p-6 border-l-4 border-black bg-gray-50 rounded-xl">
-          <p className="text-gray-700 italic">
-            "This church has changed my life! My donations truly make a difference."
-          </p>
-          <p className="text-gray-600 font-semibold mt-3">– Emily Watson</p>
+        {/* Donate Button */}
+        <button
+          onClick={handleDonate}
+          disabled={!amount || !user}
+          className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 disabled:bg-gray-400"
+        >
+          Donate Now
+        </button>
+      </div>
+
+      {/* Transaction History (Placeholder) */}
+      <div className="mt-8 w-full max-w-lg">
+        <h3 className="text-lg font-bold mb-3">Donation History</h3>
+        <div className="bg-white p-4 shadow-md rounded-lg">
+          <p className="text-gray-500 text-center">No donations yet.</p>
         </div>
       </div>
     </div>
@@ -138,9 +127,124 @@ const Giving = () => {
 
 export default Giving;
 
+<<<<<<< HEAD
 const handleDonation = async (gateway) => {
   const donationData = { amount, currency, email: "user@example.com" };  
+=======
+// import React, { useState, useEffect } from "react";
+// import { getAuth } from "firebase/auth";
+// import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
+// import { app } from "../firebase";
 
+// const GivingPage = () => {
+//   const auth = getAuth(app);
+//   const db = getFirestore(app);
+//   const [user, setUser] = useState(null);
+//   const [amount, setAmount] = useState("");
+//   const [anonymous, setAnonymous] = useState(false);
+//   const [paymentProvider, setPaymentProvider] = useState("stripe");
+//   const [history, setHistory] = useState([]);
+
+//   useEffect(() => {
+//     const fetchUser = () => {
+//       setUser(auth.currentUser);
+//     };
+//     fetchUser();
+//   }, [auth]);
+
+//   const handleDonate = async () => {
+//     if (!user) {
+//       alert("Please log in before donating.");
+//       return;
+//     }
+
+//     try {
+//       await addDoc(collection(db, "donations"), {
+//         userId: user.uid,
+//         amount,
+//         anonymous,
+//         paymentProvider,
+//         timestamp: new Date(),
+//       });
+
+//       alert("Donation successful!");
+//       setAmount("");
+//     } catch (error) {
+//       console.error("Donation error: ", error);
+//     }
+//   };
+
+//   useEffect(() => {
+//     const fetchHistory = async () => {
+//       if (!user) return;
+//       const querySnapshot = await getDocs(collection(db, "donations"));
+//       setHistory(querySnapshot.docs.map((doc) => doc.data()));
+//     };
+//     fetchHistory();
+//   }, [user]);
+
+//   return (
+//     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+//       <h1 className="text-3xl font-bold mb-6">Give to Support</h1>
+//       <div className="bg-white p-6 shadow-lg rounded-lg w-full max-w-md">
+//         <input
+//           type="number"
+//           value={amount}
+//           onChange={(e) => setAmount(e.target.value)}
+//           placeholder="Enter amount"
+//           className="w-full p-2 border rounded-md mb-4"
+//         />
+//         <label className="flex items-center gap-2">
+//           <input
+//             type="checkbox"
+//             checked={anonymous}
+//             onChange={() => setAnonymous(!anonymous)}
+//           />
+//           Give Anonymously
+//         </label>
+
+//         <select
+//           value={paymentProvider}
+//           onChange={(e) => setPaymentProvider(e.target.value)}
+//           className="w-full p-2 border rounded-md my-4"
+//         >
+//           <option value="stripe">Stripe</option>
+//           <option value="flutterwave">Flutterwave</option>
+//           <option value="paystack">Paystack</option>
+//         </select>
+
+//         <button
+//           onClick={handleDonate}
+//           className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+//         >
+//           Donate Now
+//         </button>
+//       </div>
+
+//       <div className="mt-6 w-full max-w-md">
+//         <h2 className="text-xl font-semibold mb-4">Donation History</h2>
+//         <div className="bg-white p-4 shadow rounded-md">
+//           {history.map((donation, index) => (
+//             <div key={index} className="border-b py-2">
+//               <p>
+//                 <strong>Amount:</strong> ${donation.amount}
+//               </p>
+//               <p>
+//                 <strong>Provider:</strong> {donation.paymentProvider}
+//               </p>
+//               <p>
+//                 <strong>Anonymous:</strong> {donation.anonymous ? "Yes" : "No"}
+//               </p>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+>>>>>>> 7fc66ce888792a9ed7607379d5bf4c2b27b6a2f7
+
+// export default GivingPage;
 
 
   let url = "";  

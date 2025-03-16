@@ -24,13 +24,6 @@ Do you have specific features in mind for the church website and app?
 
 
 
-
-
-
-
-
-
-
 Church Website (React)
 The website will primarily serve as an informational and engagement hub. It can include:
 
