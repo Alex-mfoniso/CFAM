@@ -76,15 +76,6 @@ const Giving = () => {
           <label>Give Anonymously</label>
         </div>
 
-<<<<<<< HEAD
-        {/* Donate Button */}
-        <button className="w-full bg-black text-white py-4 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-800 transition-all" onClick={() => handleDonation("stripe")}>
-
-
-          <FaLock />
-          Donate {currencies[currency].symbol}
-          {convertedAmount} Securely
-=======
         {/* Payment Method Selection */}
         <label className="block mb-2">Payment Method:</label>
         <select
@@ -101,7 +92,6 @@ const Giving = () => {
         <button className="flex items-center justify-center bg-gray-200 py-2 px-4 rounded-md w-full mb-4">
           <QrCode className="w-5 h-5 mr-2" />
           Generate QR Code
->>>>>>> 7fc66ce888792a9ed7607379d5bf4c2b27b6a2f7
         </button>
 
         {/* Donate Button */}
@@ -127,10 +117,6 @@ const Giving = () => {
 
 export default Giving;
 
-<<<<<<< HEAD
-const handleDonation = async (gateway) => {
-  const donationData = { amount, currency, email: "user@example.com" };  
-=======
 // import React, { useState, useEffect } from "react";
 // import { getAuth } from "firebase/auth";
 // import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
@@ -242,32 +228,6 @@ const handleDonation = async (gateway) => {
 //     </div>
 //   );
 // };
->>>>>>> 7fc66ce888792a9ed7607379d5bf4c2b27b6a2f7
 
 // export default GivingPage;
 
-
-  let url = "";  
-  if (gateway === "stripe") {
-    const response = await fetch("http://localhost:5000/donate/stripe", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(donationData),
-    });
-    const data = await response.json();
-    if (data.clientSecret) {
-      // Redirect to Stripe checkout
-      alert("Stripe Payment Initialized!");
-    }
-  } else if (gateway === "flutterwave" || gateway === "paystack") {
-    const response = await fetch(`http://localhost:5000/donate/${gateway}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(donationData),
-    });
-    const data = await response.json();
-    if (data.paymentLink) {
-      window.location.href = data.paymentLink; // Redirect to payment page
-    }
-  }
-};
