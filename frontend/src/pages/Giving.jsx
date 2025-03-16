@@ -116,7 +116,9 @@ const Giving = () => {
         </div>
 
         {/* Donate Button */}
-        <button className="w-full bg-black text-white py-4 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-800 transition-all">
+        <button className="w-full bg-black text-white py-4 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-800 transition-all" onClick={() => handleDonation("stripe")}>
+
+
           <FaLock />
           Donate {currencies[currency].symbol}
           {convertedAmount} Securely
@@ -136,32 +138,32 @@ const Giving = () => {
 
 export default Giving;
 
-// const handleDonation = async (gateway) => {
-//   const donationData = { amount, currency, email: "user@example.com" };
-
-//   let url = "";
-//   if (gateway === "stripe") {
-//     const response = await fetch("http://localhost:5000/donate/stripe", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify(donationData),
-//     });
-//     const data = await response.json();
-//     if (data.clientSecret) {
-//       // Redirect to Stripe checkout
-//       alert("Stripe Payment Initialized!");
-//     }
-//   } else if (gateway === "flutterwave" || gateway === "paystack") {
-//     const response = await fetch(`http://localhost:5000/donate/${gateway}`, {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify(donationData),
-//     });
-//     const data = await response.json();
-//     if (data.paymentLink) {
-//       window.location.href = data.paymentLink; // Redirect to payment page
-//     }
-//   }
-// };
+const handleDonation = async (gateway) => {
+  const donationData = { amount, currency, email: "user@example.com" };  
 
 
+
+  let url = "";  
+  if (gateway === "stripe") {
+    const response = await fetch("http://localhost:5000/donate/stripe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(donationData),
+    });
+    const data = await response.json();
+    if (data.clientSecret) {
+      // Redirect to Stripe checkout
+      alert("Stripe Payment Initialized!");
+    }
+  } else if (gateway === "flutterwave" || gateway === "paystack") {
+    const response = await fetch(`http://localhost:5000/donate/${gateway}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(donationData),
+    });
+    const data = await response.json();
+    if (data.paymentLink) {
+      window.location.href = data.paymentLink; // Redirect to payment page
+    }
+  }
+};
