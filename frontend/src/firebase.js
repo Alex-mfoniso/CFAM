@@ -1,5 +1,5 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+  import { initializeApp } from "firebase/app";
+import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
@@ -22,4 +22,10 @@ const auth = getAuth(app);
 const storage = getStorage(app);
 
 // Correctly export all services
-export { app, db, auth, storage,provider };
+export { app, db, auth, storage,provider, collection, addDoc, getDocs  };
+
+
+
+
+// // https://drive.google.com/file/d/1D92YvZrShdjT0SB0e9SKEpGnalqO_5C4/view?usp=drive_link
+//  https://drive.google.com/file/uc?export=download&id=1D92YvZrShdjT0SB0e9SKEpGnalqO_5C4

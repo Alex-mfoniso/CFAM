@@ -67,3 +67,47 @@ const Footer = () => {
 };
 
 export default Footer;
+
+
+// import React, { useState } from "react";
+// import { db, collection, addDoc } from "../firebase"; // Import Firebase Firestore
+
+// const Footer = () => {
+//   const [email, setEmail] = useState("");
+//   const [message, setMessage] = useState("");
+
+//   const handleSubscribe = async (e) => {
+//     e.preventDefault();
+
+//     try {
+//       await addDoc(collection(db, "subscribers"), { email });
+//       setMessage("Subscription successful!");
+//       setEmail(""); // Clear input field
+//     } catch (error) {
+//       setMessage("Failed to subscribe. Try again.");
+//     }
+//   };
+
+//   return (
+//     <div className="bg-gray-900 text-white p-6">
+//       <h3 className="text-xl font-bold mb-4">Subscribe to Our Newsletter</h3>
+//       <p className="text-gray-400 mb-4">Stay updated with the latest news and events.</p>
+//       <form onSubmit={handleSubscribe} className="relative w-full">
+//         <input 
+//           type="email" 
+//           value={email}
+//           onChange={(e) => setEmail(e.target.value)}
+//           placeholder="Enter your email" 
+//           className="p-3 w-full rounded-md pr-20 bg-white text-black"
+//           required
+//         />
+//         <button type="submit" className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-blue-600 px-4 py-2 font-bold rounded-md hover:bg-blue-700">
+//           Subscribe
+//         </button>
+//       </form>
+//       {message && <p className="text-green-500 mt-2">{message}</p>}
+//     </div>
+//   );
+// };
+
+// export default Footer;
