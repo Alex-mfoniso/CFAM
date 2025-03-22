@@ -1,5 +1,6 @@
 import { useState } from "react";
-import registerAdmin from "../registerAdmin"; // 
+import registerAdmin from "../registerAdmin";
+// import { registerAdmin } from "./registerAdmin";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -28,7 +29,11 @@ const Signup = () => {
 
     try {
       // Create user with Firebase Authentication
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
 
       // Save user data with admin role in Firestore
@@ -86,18 +91,26 @@ const Signup = () => {
             required
           />
 
-          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+          >
             Sign Up
           </button>
         </form>
 
-        <button onClick={handleGoogleSignup} className="w-full bg-red-500 text-white py-2 rounded-md mt-4">
+        <button
+          onClick={handleGoogleSignup}
+          className="w-full bg-red-500 text-white py-2 rounded-md mt-4"
+        >
           Sign Up with Google
         </button>
 
         <p className="text-center mt-4">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-600 hover:underline">Login</Link>
+          <Link to="/login" className="text-blue-600 hover:underline">
+            Login
+          </Link>
         </p>
       </div>
     </div>
