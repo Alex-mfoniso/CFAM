@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "../firebase"; // Adjust path if needed
 import { useAuth } from "../contexts/AuthContext";
 
 const Signup = () => {
@@ -7,7 +10,7 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const { signup, googleSignIn } = useAuth();
+  const { googleSignIn } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -23,7 +26,16 @@ const Signup = () => {
     }
 
     try {
-      await signup(email, password);
+      // Create user with email and password
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Save user data with admin role in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        email: user.email,
+        role: "admin",
+      });
+
       alert("Verification email sent. Please check your inbox.");
       navigate("/login");
     } catch (err) {

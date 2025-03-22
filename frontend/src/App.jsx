@@ -9,7 +9,7 @@ import { setAdminRole } from "./assignAdmin"; // Import the function
 
 const App = () => {
   useEffect(() => {
-    setAdminRole("OODmIqUK5LfdWvFuE2i6FIGi9tP2"); // Replace with actual user UID
+    registerAdmin("alexandermfoniso21@gmail.com", "SecurePassword123");
   }, []);
 
   return (
