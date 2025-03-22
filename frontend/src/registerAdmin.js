@@ -1,8 +1,9 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "./firebase"; // Adjust path if needed
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { auth, db } from "./firebase"; // Adjust the path based on your project structure
 
-const registerAdmin = async (email, password) => {
+// Function to create an admin user
+export const registerAdmin = async (email, password) => {
   try {
     // Create user with email and password
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -20,5 +21,19 @@ const registerAdmin = async (email, password) => {
   }
 };
 
-// ✅ Ensure this export is present!
-export default registerAdmin;
+// Function to update user role
+export const setAdminRole = async (userId) => {
+  try {
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      await setDoc(userRef, { role: "admin" }, { merge: true });
+      console.log("✅ Admin role assigned successfully!");
+    } else {
+      console.log("❌ User document does not exist.");
+    }
+  } catch (error) {
+    console.error("❌ Error updating role:", error);
+  }
+};

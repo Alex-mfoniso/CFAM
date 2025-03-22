@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import AppRoutes from "./routes"; // Ensure this file exists
 import { Analytics } from "@vercel/analytics/react";
 import Contact from "./pages/Contact";
-import { setAdminRole } from "./registerAdmin"; // Import the function
+import { registerAdmin, setAdminRole } from "./registerAdmin"; 
 
 const App = () => {
   useEffect(() => {
