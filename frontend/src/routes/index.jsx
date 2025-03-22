@@ -12,6 +12,7 @@ import Footer from "../components/Footer";
 const Login = lazy(() => import("../pages/Login"));
 const Signup = lazy(() => import("../pages/Signup"));
 const Home = lazy(() => import("../pages/Home"));
+const Admin = lazy(() => import("../pages/Admin"));
 const About = lazy(() => import("../pages/About"));
 const Sermons = lazy(() => import("../pages/Sermons"));
 const Events = lazy(() => import("../pages/Events"));
@@ -40,6 +41,7 @@ const AppRoutes = () => {
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/admin" element={<Admin />} />
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
