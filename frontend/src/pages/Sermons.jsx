@@ -9,6 +9,7 @@ const SermonPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true); // Loading state
+  const [searchQuery, setSearchQuery] = useState(""); // Search query state
   const sermonsPerPage = 6; // Number of sermons per page
 
   useEffect(() => {
@@ -51,6 +52,22 @@ const SermonPage = () => {
     setCurrentPage(1); // Reset to first page when filtering
   };
 
+  // Handle search input change
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+
+    // Filter sermons based on search query
+    const filtered = sermons.filter(
+      (sermon) =>
+        sermon.title.toLowerCase().includes(query) ||
+        sermon.category.toLowerCase().includes(query)
+    );
+
+    setFilteredSermons(filtered);
+    setCurrentPage(1); // Reset to first page when searching
+  };
+
   // Pagination Logic
   const indexOfLastSermon = currentPage * sermonsPerPage;
   const indexOfFirstSermon = indexOfLastSermon - sermonsPerPage;
@@ -59,6 +76,17 @@ const SermonPage = () => {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold text-center mb-6">Sermons</h1>
+
+      {/* Search Bar */}
+      <div className="flex justify-center mb-6">
+        <input
+          type="text"
+          placeholder="Search sermons by title or category..."
+          value={searchQuery}
+          onChange={handleSearch}
+          className="w-full max-w-md px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+        />
+      </div>
 
       {/* Category Filter */}
       <div className="flex flex-wrap justify-center gap-4 mb-6">
