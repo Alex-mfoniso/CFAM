@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../firebase"; // Adjust path if needed
-import { useAuth } from "../contexts/AuthContext";
+import { auth, db } from "../firebase"; // Adjust the import path if needed
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -26,7 +26,7 @@ const Signup = () => {
     }
 
     try {
-      // Create user with email and password
+      // Create user with Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
@@ -36,10 +36,11 @@ const Signup = () => {
         role: "admin",
       });
 
-      alert("Verification email sent. Please check your inbox.");
-      navigate("/login");
+      alert("✅ Admin account created successfully!");
+      navigate("/login"); // Redirect to login page
     } catch (err) {
-      setError("Failed to create an account. Try again.");
+      setError("❌ Failed to create an account. Try again.");
+      console.error("Firebase Error:", err.message);
     }
   };
 
@@ -48,7 +49,7 @@ const Signup = () => {
       await googleSignIn();
       navigate("/dashboard");
     } catch (err) {
-      setError("Google sign-up failed.");
+      setError("❌ Google sign-up failed.");
     }
   };
 
