@@ -1,117 +1,3 @@
-// import { useState } from "react";
-// import { Link, useNavigate } from "react-router-dom";
-// import { useAuth } from "../contexts/AuthContext";
-
-// const Login = () => {
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [error, setError] = useState("");
-//   const [loading, setLoading] = useState(false);
-//   const { login, googleSignIn, resetPassword } = useAuth();
-//   const navigate = useNavigate();
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setError("");
-//     setLoading(true);
-
-//     try {
-//       await login(email, password);
-//       navigate("/dashboard");
-//     } catch (err) {
-//       setError("Failed to log in. Check your credentials.");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const handleGoogleLogin = async () => {
-//     setError("");
-//     setLoading(true);
-
-//     try {
-//       await googleSignIn();
-//       navigate("/dashboard");
-//     } catch (err) {
-//       if (err.code === "auth/popup-closed-by-user") {
-//         setError("Google sign-in popup was closed before completing.");
-//       } else {
-//         setError("Google login failed. Try again.");
-//       }
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const handleForgotPassword = async () => {
-//     if (!email) return setError("Enter your email first.");
-//     try {
-//       await resetPassword(email);
-//       setError("Password reset link sent! Check your inbox.");
-//     } catch (err) {
-//       setError("Failed to send password reset email.");
-//     }
-//   };
-
-//   return (
-//     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-//       <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-md">
-//         <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
-//         {error && <p className="text-red-500 text-center">{error}</p>}
-
-//         <form onSubmit={handleSubmit} className="space-y-4">
-//           <input
-//             type="email"
-//             placeholder="Email"
-//             value={email}
-//             onChange={(e) => setEmail(e.target.value)}
-//             className="w-full px-4 py-2 border rounded-md"
-//             required
-//           />
-//           <input
-//             type="password"
-//             placeholder="Password"
-//             value={password}
-//             onChange={(e) => setPassword(e.target.value)}
-//             className="w-full px-4 py-2 border rounded-md"
-//             required
-//           />
-
-//           <button
-//             type="submit"
-//             className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition disabled:opacity-50"
-//             disabled={loading}
-//           >
-//             {loading ? "Logging in..." : "Login"}
-//           </button>
-//         </form>
-
-//         <button
-//           onClick={handleGoogleLogin}
-//           className="w-full bg-red-500 text-white py-2 rounded-md mt-4 hover:bg-red-600 transition disabled:opacity-50"
-//           disabled={loading}
-//         >
-//           {loading ? "Signing in with Google..." : "Login with Google"}
-//         </button>
-
-//         <button onClick={handleForgotPassword} className="w-full text-blue-600 mt-4">
-//           Forgot Password?
-//         </button>
-
-//         <p className="text-center mt-4">
-//           Don't have an account?{" "}
-//           <Link to="/signup" className="text-blue-600 hover:underline">
-//             Sign Up
-//           </Link>
-//         </p>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Login;
-
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -127,6 +13,13 @@ const Login = () => {
     setError("");
     setLoading(true);
 
+    // Validate inputs
+    if (!email || !password) {
+      setError("Please enter both email and password");
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
@@ -137,26 +30,28 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
+      
 
       if (!response.ok) {
-        // Handle specific error messages from your backend
-        if (data.message === "Invalid email or password") {
-          throw new Error("Invalid email or password");
-        } else if (response.status === 400) {
-          throw new Error("Please provide both email and password");
-        } else {
-          throw new Error(data.message || "Login failed");
-        }
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login failed');
       }
 
-      // Success - cookies are automatically set by the backend
-      // Store basic user data in localStorage if needed
-      localStorage.setItem("user", JSON.stringify(data));
-      navigate("/dashboard");
+      const data = await response.json();
+
+      // Verify and store user data
+      if (!data.user || !data.user._id) {
+        throw new Error("Invalid user data received");
+      }
+
+      // Store user data in localStorage
+      localStorage.setItem("user", JSON.stringify(data.user));
+      
+      // Redirect to dashboard
+      navigate("/dashboard", { replace: true });
 
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -166,7 +61,7 @@ const Login = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-md">
         <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
-        
+
         {error && (
           <div className="mb-4 p-3 bg-red-50 text-red-800 rounded text-center">
             {error}
@@ -174,40 +69,64 @@ const Login = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 border rounded-md"
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border rounded-md"
-            required
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              placeholder="your@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Password
+            </label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
 
           <button
             type="submit"
-            className={`w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 ${
-              loading ? "opacity-50 cursor-not-allowed" : ""
+            className={`w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition flex justify-center items-center ${
+              loading ? "opacity-70 cursor-not-allowed" : ""
             }`}
             disabled={loading}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Processing...
+              </>
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
 
-        <p className="text-center mt-4">
-          Don't have an account?{" "}
-          <Link to="/signup" className="text-blue-600 hover:underline">
-            Sign Up
+        <div className="mt-6 text-center text-sm">
+          <Link to="/forgot-password" className="text-blue-600 hover:underline">
+            Forgot password?
           </Link>
-        </p>
+          <span className="mx-2 text-gray-400">•</span>
+          <Link to="/signup" className="text-blue-600 hover:underline">
+            Create new account
+          </Link>
+        </div>
       </div>
     </div>
   );
