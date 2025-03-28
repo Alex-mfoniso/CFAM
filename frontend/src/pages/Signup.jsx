@@ -1,61 +1,58 @@
 import { useState } from "react";
-import registerAdmin from "../registerAdmin";
-// import { registerAdmin } from "./registerAdmin";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../firebase"; // Adjust the import path if needed
 
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState("");
   const [error, setError] = useState("");
-  const { googleSignIn } = useAuth();
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setLoading(true);
+    setError('');
+    setSuccess('');
 
-    if (password.length < 6) {
-      return setError("Password must be at least 6 characters.");
-    }
-
+    // Frontend validation
     if (password !== confirmPassword) {
-      return setError("Passwords do not match!");
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
     }
 
     try {
-      // Create user with Firebase Authentication
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-
-      // Save user data with admin role in Firestore
-      await setDoc(doc(db, "users", user.uid), {
-        email: user.email,
-        role: "admin",
+      const response = await fetch("http://localhost:5000/api/auth/signup", {
+        method: "POST",
+        credentials: "include", // Essential for cookies
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password, name }),
       });
 
-      alert("✅ Admin account created successfully!");
-      navigate("/login"); // Redirect to login page
-    } catch (err) {
-      setError("❌ Failed to create an account. Try again.");
-      console.error("Firebase Error:", err.message);
-    }
-  };
+      const data = await response.json();
 
-  const handleGoogleSignup = async () => {
-    try {
-      await googleSignIn();
-      navigate("/dashboard");
+      if (!response.ok) {
+        // Handle specific error messages from your backend
+        if (data.message === "User already exists") {
+          throw new Error("An account with this email already exists");
+        } else {
+          throw new Error(data.message || "Registration failed");
+        }
+      }
+
+      // Success - cookies are automatically set by the backend
+      setSuccess("Account created successfully! Redirecting to login...");
+      setTimeout(() => navigate("/login"), 2000);
+
     } catch (err) {
-      setError("❌ Google sign-up failed.");
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -63,9 +60,28 @@ const Signup = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-md">
         <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
-        {error && <p className="text-red-500 text-center">{error}</p>}
+        
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 text-red-800 rounded text-center">
+            {error}
+          </div>
+        )}
+        
+        {success && (
+          <div className="mb-4 p-3 bg-green-50 text-green-800 rounded text-center">
+            {success}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full px-4 py-2 border rounded-md"
+            required
+          />
           <input
             type="email"
             placeholder="Email"
@@ -81,6 +97,7 @@ const Signup = () => {
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-4 py-2 border rounded-md"
             required
+            minLength="6"
           />
           <input
             type="password"
@@ -93,18 +110,14 @@ const Signup = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+            className={`w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={loading}
           >
-            Sign Up
+            {loading ? "Creating account..." : "Sign Up"}
           </button>
         </form>
-
-        <button
-          onClick={handleGoogleSignup}
-          className="w-full bg-red-500 text-white py-2 rounded-md mt-4"
-        >
-          Sign Up with Google
-        </button>
 
         <p className="text-center mt-4">
           Already have an account?{" "}

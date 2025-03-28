@@ -1,65 +1,160 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from 'react';
+import { supabase } from '../supabase';
 import { 
-  getAuth, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  sendPasswordResetEmail, 
-  sendEmailVerification, 
-  signOut,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
-import { app } from "../firebase"; // Ensure Firebase is configured
+  signUp, 
+  signIn, 
+  signInWithGoogle, 
+  signOut, 
+  getSession,
+  getUser
+} from '../lib/auth';
 
 const AuthContext = createContext();
 
-export const useAuth = () => useContext(AuthContext);
-
-export const AuthProvider = ({ children }) => {
-  const auth = getAuth(app);
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
+    const initializeAuth = async () => {
+      try {
+        const session = await getSession();
+        setUser(session?.user ?? null);
+      } catch (err) {
+        setError(err.message);
+        console.error('Auth initialization error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initializeAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      try {
+        setUser(session?.user ?? null);
+        
+        // Handle specific auth events if needed
+        switch (event) {
+          case 'SIGNED_IN':
+            console.log('User signed in');
+            break;
+          case 'SIGNED_OUT':
+            console.log('User signed out');
+            break;
+          case 'TOKEN_REFRESHED':
+            console.log('Token refreshed');
+            break;
+          case 'USER_UPDATED':
+            console.log('User updated');
+            break;
+          default:
+            break;
+        }
+      } catch (err) {
+        setError(err.message);
+        console.error('Auth state change error:', err);
+      } finally {
+        setLoading(false);
+      }
     });
-    return () => unsubscribe();
-  }, [auth]);
 
-  // Email/Password Signup with Email Verification
-  const signup = async (email, password) => {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    await sendEmailVerification(userCredential.user);
-    alert("Verification email sent! Please check your inbox.");
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    };
+  }, []);
+
+  // Enhanced auth functions with error handling
+  const handleSignUp = async (email, password, name) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await signUp(email, password, name);
+      return result;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Google Authentication
-  const googleSignIn = async () => {
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+  const handleSignIn = async (email, password) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await signIn(email, password);
+      return result;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Email/Password Login
-  const login = async (email, password) => {
-    await signInWithEmailAndPassword(auth, email, password);
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await signInWithGoogle();
+      return result;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Password Reset
-  const resetPassword = async (email) => {
-    await sendPasswordResetEmail(auth, email);
-    alert("Password reset email sent!");
+  const handleSignOut = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await signOut();
+      setUser(null);
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Logout
-  const logout = async () => {
-    await signOut(auth);
+  const value = {
+    user,
+    error,
+    loading,
+    signUp: handleSignUp,
+    signIn: handleSignIn,
+    signInWithGoogle: handleGoogleSignIn,
+    signOut: handleSignOut,
+    getUser: async () => {
+      try {
+        const { data: { user } } = await getUser();
+        return user;
+      } catch (err) {
+        setError(err.message);
+        throw err;
+      }
+    },
+    clearError: () => setError(null)
   };
 
   return (
-    <AuthContext.Provider value={{ user, signup, login, googleSignIn, resetPassword, logout }}>
-      {!loading && children}
+    <AuthContext.Provider value={value}>
+      {!loading ? children : <div className="loading-indicator">Loading...</div>}
     </AuthContext.Provider>
   );
-};
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
