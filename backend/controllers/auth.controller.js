@@ -135,6 +135,15 @@ export const login = async (req, res) => {
       res.status(500).json({ message: "Server error" });
   }
 };
+export const delUser = async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error("Error in delUser controller", error.message);
+    res.status(500).json({ message: error.message });
+  }
+};
 
 
 // export const login = async (req, res) => {
