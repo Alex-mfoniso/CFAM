@@ -228,3 +228,9 @@ export const getProfile = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+
+
+export const stupid  = async (req, res) => {
+  res.json({body: "Hello Fucking World"})
+}

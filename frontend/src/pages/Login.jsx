@@ -30,6 +30,8 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
 
+      console.log(response.data)
+
       
 
       if (!response.ok) {
@@ -38,7 +40,7 @@ const Login = () => {
       }
 
       const data = await response.json();
-
+      console.log(data)
       // Verify and store user data
       if (!data.user || !data.user._id) {
         throw new Error("Invalid user data received");

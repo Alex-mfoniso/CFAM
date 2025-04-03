@@ -17,7 +17,7 @@
 
 
 import express from 'express';
-import { login, logout, refreshToken, signup } from '../controllers/auth.controller.js';
+import { login, logout, refreshToken, signup, stupid } from '../controllers/auth.controller.js';
 
 const router = express.Router();
 
@@ -32,6 +32,7 @@ router.use((req, res, next) => {
 
 router.post("/signup", signup);
 router.post("/login", login);
+router.get("/login", stupid);
 router.post("/logout", logout);
 router.post("/refresh-token", refreshToken);
 
