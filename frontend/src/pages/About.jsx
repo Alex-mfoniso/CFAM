@@ -3,8 +3,6 @@ import React from "react";
 
 const About = () => {
 
-
-
   return (
     <div className='pl-[50px] pt-[30px] bg-black pb-[60px]'>
       <h1 className="text-[60px] text-white font-extrabold">About us</h1>

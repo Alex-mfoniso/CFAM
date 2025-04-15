@@ -1,64 +1,96 @@
+import axios from "axios";
 import Donation from "../models/donation.model.js";
-import { stripe } from "../lib/stripe.js";
+import jwt from "jsonwebtoken";
+
 
 export const createCheckoutSession = async (req, res) => {
-	try {
-		const { donation } = req.body;
+  try {
+    const { donation } = req.body;
 
-		if (!donation || !donation.currency || !donation.totalAmount) {
-			return res.status(400).json({ error: "Invalid donation data" });
-		}
+    if (!donation || !donation.currency || !donation.totalAmount || !req.user) {
+      return res.status(400).json({ error: "Invalid donation data or user not authenticated" });
+    }
 
-		const amount = Math.round(donation.totalAmount * 100); // Stripe wants the amount in cents
+    const paystackSecret = process.env.PAYSTACK_SECRET_KEY;
 
-		const session = await stripe.checkout.sessions.create({
-			payment_method_types: ["card"],
-			line_items: [{
-				price_data: {
-					currency: donation.currency,
-					product_data: {
-						name: `Donation of ${donation.totalAmount} ${donation.currency}`,
-					},
-					unit_amount: amount,
-				},
-				quantity: 1,
-			}],
-			mode: "payment",
-			success_url: `${process.env.CLIENT_URL}/purchase-success?session_id={CHECKOUT_SESSION_ID}`,
-			cancel_url: `${process.env.CLIENT_URL}/purchase-cancel`,
-			metadata: {
-				userId: req.user._id.toString(),
-				totalAmount: donation.totalAmount,
-				currency: donation.currency,
-			},
-		});
+    const amount = Math.round(donation.totalAmount * 100);
 
-		// Save donation details to the database
-		const newDonation = new Donation({
-			user: req.user._id,
-			currency: donation.currency,
-			totalAmount: donation.totalAmount,
-			stripeSessionId: session.id,
-		});
-		await newDonation.save();
+    const response = await axios.post(
+      "https://api.paystack.co/transaction/initialize",
+      {
+        email: req.user.email, // required by Paystack
+        amount: amount,
+        currency: donation.currency || "NGN",
+        metadata: {
+          userId: req.user._id,
+          totalAmount: donation.totalAmount,
+        },
+        callback_url: `${process.env.CLIENT_URL}/purchase-success`, // must be handled client-side
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${paystackSecret}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-		res.status(200).json({ id: session.id, totalAmount: donation.totalAmount });
-	} catch (error) {
-		console.error("Error processing checkout:", error);
-		res.status(500).json({ message: "Error processing checkout", error: error.message });
-	}
+    const { authorization_url, reference } = response.data.data;
+
+    // Save donation to DB
+    const newDonation = new Donation({
+      user: req.user._id,
+      currency: donation.currency,
+      totalAmount: donation.totalAmount,
+      paystackReference: reference,
+    });
+
+    await newDonation.save();
+
+    res.status(200).json({ url: authorization_url });
+  } catch (error) {
+    console.error("Error initializing Paystack payment:", error.message);
+    res.status(500).json({ message: "Error initializing payment", error: error.message });
+  }
 };
 
 export const checkoutSuccess = async (req, res) => {
-	try {
-		const { sessionId } = req.body;
-		const session = await stripe.checkout.sessions.retrieve(sessionId);
+  try {
+    const { reference } = req.query;
 
-		if (session.payment_status === "paid") {
-			return res.status(200).json({ message: "Checkout successful" });
-		}
-	} catch (error) {
-		console.error("Error processing successful checkout:", error);
-		res.status(500).json({ message: "Error processing successful checkout", error: error.message });
-	}
+    const verifyResponse = await axios.get(`https://api.paystack.co/transaction/verify/${reference}`, {
+      headers: {
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+      },
+    });
+
+    const { status, amount, currency } = verifyResponse.data.data;
+
+    if (status === "success") {
+      return res.status(200).json({ message: "Payment verified successfully", amount, currency });
+    } else {
+      return res.status(400).json({ message: "Payment not successful" });
+    }
+  } catch (error) {
+    console.error("Error verifying Paystack payment:", error.message);
+    res.status(500).json({ message: "Error verifying payment", error: error.message });
+  }
+};
+
+
+export const verifyAccessToken = (req, res, next) => {
+  try {
+    const token = req.cookies.accessToken;
+
+    if (!token) {
+      return res.status(401).json({ message: "Access token missing" });
+    }
+
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    req.user = decoded; // contains userId, etc.
+    next();
+  } catch (error) {
+    console.error("Access token verification failed:", error.message);
+    return res.status(403).json({ message: "Invalid or expired access token" });
+  }
 };
