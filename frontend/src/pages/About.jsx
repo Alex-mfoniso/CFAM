@@ -69,6 +69,66 @@ const About = () => {
           </div>
         </section>
       </div>
+
+      <div className="mx-auto px-4 py-12 font-sans bg-black">
+  {/* Heading section */}
+  <div className="text-center mb-12">
+    <h1 className="text-4xl font-bold text-white mb-4">
+      Meet John & Sophie,<br />
+      our beloved pastors
+    </h1>
+    <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+      Lorem ipsum dolor sit amet consectetur adipiscing elit eiusmod in enim nibh,<br />
+      porta sed at maecenas viverra varius id sit in non dui.
+    </p>
+  </div>
+
+  {/* Divider */}
+  <div className="border-t border-gray-300 my-8"></div>
+
+  {/* Pastor profiles */}
+  <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+    {/* Pastor 1 */}
+    <div className="bg-gray-900 rounded-lg p-6 shadow-lg">
+      <div className="flex flex-col items-center">
+        <div className="w-40 h-40 mb-6 overflow-hidden rounded-full border-4 border-white">
+          <img 
+            src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" 
+            alt="Pastor John Carter"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="text-center w-full">
+          <h2 className="text-2xl font-bold text-white mb-2">John Carter</h2>
+          <p className="text-sm uppercase tracking-widest text-gray-400 mb-4">PRINCIPAL PASTOR</p>
+          <p className="text-gray-300">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Amet, dignissimos.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {/* Pastor 2 */}
+    <div className="bg-gray-900 rounded-lg p-6 shadow-lg">
+      <div className="flex flex-col items-center">
+        <div className="w-40 h-40 mb-6 overflow-hidden rounded-full border-4 border-white">
+          <img 
+            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" 
+            alt="Pastor Sophie Carter"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="text-center w-full">
+          <h2 className="text-2xl font-bold text-white mb-2">Sophie Carter</h2>
+          <p className="text-sm uppercase tracking-widest text-gray-400 mb-4">PRINCIPAL PASTOR</p>
+          <p className="text-gray-300">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Amet, dignissimos.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
     </div>
   );
 };
