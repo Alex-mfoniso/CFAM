@@ -1,11 +1,11 @@
 import { useState } from "react";
-
 import { registerAdmin } from "../registerAdmin";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../firebase"; // Adjust the import path if needed
+import { auth, db } from "../firebase";
+import { FcGoogle } from "react-icons/fc"; // Google icon
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -28,22 +28,16 @@ const Signup = () => {
     }
 
     try {
-      // Create user with Firebase Authentication
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Save user data with admin role in Firestore
       await setDoc(doc(db, "users", user.uid), {
         email: user.email,
         role: "admin",
       });
 
       alert("✅ Admin account created successfully!");
-      navigate("/login"); // Redirect to login page
+      navigate("/login");
     } catch (err) {
       setError("❌ Failed to create an account. Try again.");
       console.error("Firebase Error:", err.message);
@@ -93,7 +87,7 @@ const Signup = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
           >
             Sign Up
           </button>
@@ -101,8 +95,9 @@ const Signup = () => {
 
         <button
           onClick={handleGoogleSignup}
-          className="w-full bg-red-500 text-white py-2 rounded-md mt-4"
+          className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 py-2 rounded-md mt-4 hover:bg-gray-50 transition"
         >
+          <FcGoogle size={20} />
           Sign Up with Google
         </button>
 

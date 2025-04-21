@@ -1,7 +1,7 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { FcGoogle } from "react-icons/fc"; // Google Icon
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -89,9 +89,10 @@ const Login = () => {
 
         <button
           onClick={handleGoogleLogin}
-          className="w-full bg-red-500 text-white py-2 rounded-md mt-4 hover:bg-red-600 transition disabled:opacity-50"
+          className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 py-2 rounded-md mt-4 hover:bg-gray-50 transition disabled:opacity-50"
           disabled={loading}
         >
+          <FcGoogle size={20} />
           {loading ? "Signing in with Google..." : "Login with Google"}
         </button>
 
