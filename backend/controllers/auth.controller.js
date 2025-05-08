@@ -2,7 +2,7 @@ import supabase from "../lib/supabase.js";
 import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 
-import bcrypt from "bcrypt"; // this was added by alex from chatgpt i dont know what it is doing
+// import bcrypt from "bcrypt"; // this was added by alex from chatgpt i dont know what it is doing
 
 
 const storeRefreshToken = async (userId, refreshToken) => {
@@ -95,7 +95,7 @@ export const signup = async (req, res) => {
           return res.status(400).json({ message: "User already exists" });
       }
 
-      const hashedPassword = await bcrypt.hash(password, 10);
+      // const hashedPassword = await bcrypt.hash(password, 10);
 
       const newUser = new User({ name, email, password: hashedPassword });
       await newUser.save();
@@ -122,7 +122,7 @@ export const login = async (req, res) => {
           return res.status(401).json({ message: "User not found" });
       }
 
-      const isMatch = await bcrypt.compare(password, user.password);
+      // const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
           return res.status(401).json({ message: "Invalid credentials" });
       }
@@ -145,31 +145,6 @@ export const delUser = async (req, res) => {
   }
 };
 
-
-// export const login = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-//     const user = await User.findOne({ email });
-
-//     if (user && (await user.comparePasswords(password))) {
-//       const { accessToken, refreshToken } = generateTokens(user._id);
-//       await storeRefreshToken(user._id, refreshToken);
-//       setCookies(res, accessToken, refreshToken);
-
-//       res.json({
-//         _id: user._id,
-//         name: user.name,
-//         email: user.email,
-//         role: user.role,
-//       });
-//     } else {
-//       res.status(400).json({ message: "Invalid email or password" });
-//     }
-//   } catch (error) {
-//     console.error("Error in login controller", error.message);
-//     res.status(500).json({ message: error.message });
-//   }
-// };
 
 export const logout = async (req, res) => {
   try {

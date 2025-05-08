@@ -9,6 +9,7 @@ const About = () => {
   style={{ backgroundImage: `url(${assets.homeBg})` }} // Replace with your actual image path
 
 >
+  {/* ppp */}
   {/* <div className="absolute inset-0 bg-black opacity-40"></div> */}
   <h1 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold">About Us</h1>
 
