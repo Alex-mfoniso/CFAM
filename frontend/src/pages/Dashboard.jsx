@@ -66,7 +66,7 @@ const Dashboard = () => {
             alt="Profile"
             className="w-24 h-24 rounded-full mx-auto mb-4 object-cover border"
           />
-          <label className="absolute bottom-0 right-4 bg-blue-500 text-white p-1 rounded-full cursor-pointer">
+          {/* <label className="absolute bottom-0 right-4 bg-blue-500 text-white p-1 rounded-full cursor-pointer">
             <input
               type="file"
               className="hidden"
@@ -74,11 +74,11 @@ const Dashboard = () => {
               onChange={(e) => handleFileUpload(e.target.files[0])}
             />
             <Edit size={16} />
-          </label>
+          </label> */}
         </div>
 
         {/* Name Editing */}
-        {editMode ? (
+        {/* {editMode ? (
           <input
             type="text"
             value={name}
@@ -87,12 +87,12 @@ const Dashboard = () => {
           />
         ) : (
           <h3 className="text-lg font-semibold mb-2">{name || "No Name"}</h3>
-        )}
+        )} */}
 
-        <p className="text-gray-600 mb-4">{user?.email}</p>
+        {/* <p className="text-gray-600 mb-4">{user?.email}</p> */}
 
         {/* Edit / Save Buttons */}
-        {editMode ? (
+        {/* {editMode ? (
           <button
             onClick={handleSave}
             className="bg-green-500 text-white px-4 py-2 rounded w-full mb-2"
@@ -107,7 +107,7 @@ const Dashboard = () => {
           >
             Edit Profile
           </button>
-        )}
+        )} */}
 
         {/* Logout Button */}
         <button
