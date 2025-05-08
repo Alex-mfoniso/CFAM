@@ -61,11 +61,11 @@ const Contact = () => {
           {/* Contact Details */}
           <div className="mt-4 flex items-center justify-center space-x-4 text-gray-700">
             <FaPhone className="text-xl" />
-            <span>+1 (555) 123-4567</span>
+            <span>+234 911 356 2352</span>
           </div>
           <div className="mt-2 flex items-center justify-center space-x-4 text-gray-700">
             <FaEnvelope className="text-xl" />
-            <span>contact@yourwebsite.com</span>
+            <span>cfam@gmail.com</span>
           </div>
         </div>
 
