@@ -42,7 +42,7 @@ const Contact = () => {
         {/* Address & Embedded Map */}
         <div className="mt-8 text-center">
           <h3 className="text-xl font-semibold text-gray-800">Our Address</h3>
-          <p className="mt-2 text-gray-700">123 Main Street, New York, NY 10001</p>
+          <p className="mt-2 text-gray-700"> 10 in front of my house</p>
 
           {/* Embedded Google Map */}
           <div className="mt-4">
