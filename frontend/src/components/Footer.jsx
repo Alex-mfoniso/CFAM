@@ -1,8 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { Facebook, Twitter, Instagram, Youtube, MapPin, Phone, Mail } from "lucide-react";
 import { motion } from "framer-motion";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "../firebase";
+import { toast } from "react-toastify";
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [isSubscribing, setIsSubscribing] = useState(false);
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    setIsSubscribing(true);
+    try {
+      await addDoc(collection(db, "subscribers"), {
+        email,
+        subscribedAt: serverTimestamp(),
+      });
+      toast.success("Successfully subscribed to the newsletter!");
+      setEmail("");
+    } catch (error) {
+      console.error("Error subscribing:", error);
+      toast.error("Failed to subscribe. Please try again later.");
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 50 }} 
@@ -31,16 +60,25 @@ const Footer = () => {
         >
           <h3 className="text-xl font-bold mb-4">Subscribe to Our Newsletter</h3>
           <p className="text-gray-400 mb-4">Stay updated with the latest news and events from our church.</p>
-          <div className="relative w-full">
+          <form onSubmit={handleSubscribe} className="relative w-full">
             <input 
               type="email" 
               placeholder="Enter your email" 
-              className="p-3 w-full rounded-md pr-20 bg-white text-black"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="p-3 w-full rounded-md pr-28 bg-white text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
-            <button className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-blue-600 px-4 py-2 font-bold rounded-md hover:bg-blue-700">
-              Subscribe
+            <button 
+              type="submit"
+              disabled={isSubscribing}
+              className={`absolute top-1/2 right-2 transform -translate-y-1/2 px-4 py-2 font-bold rounded-md text-white transition-colors duration-200 ${
+                isSubscribing ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+              }`}
+            >
+              {isSubscribing ? 'Subscribing...' : 'Subscribe'}
             </button>
-          </div>
+          </form>
         </motion.div>
 
         {/* Social Media Links */}

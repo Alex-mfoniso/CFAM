@@ -18,7 +18,7 @@ const Login = () => {
 
     try {
       await login(email, password);
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       setError("Failed to log in. Check your credentials.");
     } finally {
@@ -32,7 +32,7 @@ const Login = () => {
 
     try {
       await googleSignIn();
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       if (err.code === "auth/popup-closed-by-user") {
         setError("Google sign-in popup was closed before completing.");
@@ -96,7 +96,10 @@ const Login = () => {
           {loading ? "Signing in with Google..." : "Login with Google"}
         </button>
 
-        <button onClick={handleForgotPassword} className="w-full text-blue-600 mt-4">
+        <button
+          onClick={handleForgotPassword}
+          className="w-full text-blue-600 mt-4"
+        >
           Forgot Password?
         </button>
 

@@ -33,10 +33,10 @@ const Signup = () => {
 
       await setDoc(doc(db, "users", user.uid), {
         email: user.email,
-        role: "admin",
+        role: "user",
       });
 
-      alert("✅ Admin account created successfully!");
+      alert("✅ Account created successfully!");
       navigate("/login");
     } catch (err) {
       setError("❌ Failed to create an account. Try again.");
@@ -46,7 +46,15 @@ const Signup = () => {
 
   const handleGoogleSignup = async () => {
     try {
-      await googleSignIn();
+      const result = await googleSignIn();
+      const user = result.user;
+
+      // Save Google user to Firestore if they don't exist
+      await setDoc(doc(db, "users", user.uid), {
+        email: user.email,
+        role: "user",
+      }, { merge: true }); // Use merge so existing roles aren't overwritten
+
       navigate("/dashboard");
     } catch (err) {
       setError("❌ Google sign-up failed.");

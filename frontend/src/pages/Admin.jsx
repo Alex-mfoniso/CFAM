@@ -4,7 +4,7 @@ import { collection, addDoc, getDoc, doc, serverTimestamp, query, where, getDocs
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaHome, FaUpload, FaUsers, FaCog, FaBars } from "react-icons/fa"; // Icons from react-icons
+import { FaHome, FaUpload, FaUsers, FaCog, FaBars, FaEnvelope } from "react-icons/fa"; // Icons from react-icons
 
 const Admin = () => {
   const [title, setTitle] = useState("");
@@ -15,6 +15,7 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [users, setUsers] = useState([]); // State to store users
+  const [subscribers, setSubscribers] = useState([]); // State to store newsletter subscribers
   const [view, setView] = useState("upload"); // State to manage the current view
 
   // Check if the current user is an admin
@@ -22,11 +23,11 @@ const Admin = () => {
     const checkAdmin = async () => {
       const user = auth.currentUser;
       if (!user) return;
-  
+
       try {
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
-  
+
         if (userSnap.exists() && userSnap.data().role === "admin") {
           setIsAdmin(true); // User is an admin
         } else {
@@ -37,7 +38,7 @@ const Admin = () => {
         console.error("Error checking admin status:", error);
       }
     };
-  
+
     checkAdmin();
   }, []);
 
@@ -54,6 +55,55 @@ const Admin = () => {
     } catch (error) {
       console.error("Error fetching users:", error);
     }
+  };
+
+  // Fetch all subscribers (admin-only feature)
+  const fetchSubscribers = async () => {
+    try {
+      const subQuery = query(collection(db, "subscribers"));
+      const subSnapshot = await getDocs(subQuery);
+      const subList = subSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setSubscribers(subList);
+      toast.success("Subscribers loaded successfully.");
+    } catch (error) {
+      console.error("Error fetching subscribers:", error);
+      toast.error("Failed to load subscribers.");
+    }
+  };
+
+  // Export subscribers to CSV
+  const exportToCSV = () => {
+    if (subscribers.length === 0) {
+      toast.error("No subscribers to export.");
+      return;
+    }
+
+    // Create CSV content
+    const headers = ["Email", "Subscribed At"];
+    const csvRows = [];
+    csvRows.push(headers.join(","));
+
+    subscribers.forEach(sub => {
+      const date = sub.subscribedAt
+        ? new Date(sub.subscribedAt.seconds * 1000).toLocaleString()
+        : "Unknown";
+      const row = [sub.email, `"${date}"`];
+      csvRows.push(row.join(","));
+    });
+
+    const csvData = csvRows.join("\n");
+    const blob = new Blob([csvData], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.setAttribute("hidden", "");
+    a.setAttribute("href", url);
+    a.setAttribute("download", "newsletter_subscribers.csv");
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   // Handle sermon upload
@@ -159,9 +209,8 @@ const Admin = () => {
             <button
               onClick={uploadSermon}
               disabled={isLoading}
-              className={`bg-blue-600 px-4 py-2 text-white rounded-md hover:bg-blue-700 ${
-                isLoading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className={`bg-blue-600 px-4 py-2 text-white rounded-md hover:bg-blue-700 ${isLoading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
             >
               {isLoading ? "Uploading..." : "Upload Sermon"}
             </button>
@@ -189,6 +238,58 @@ const Admin = () => {
           </div>
         );
 
+      case "newsletter":
+        return (
+          <div className="bg-white p-6 shadow-md rounded-md">
+            <h2 className="text-2xl font-bold mb-4">Newsletter Subscribers</h2>
+            <p className="text-gray-600 mb-6">View your subscribers and export them to a CSV file to use with Mailchimp or SendGrid.</p>
+
+            <div className="flex gap-4 mb-6">
+              <button
+                onClick={fetchSubscribers}
+                className="bg-blue-600 px-4 py-2 text-white rounded-md hover:bg-blue-700"
+              >
+                Load Subscribers
+              </button>
+
+              <button
+                onClick={exportToCSV}
+                className="bg-green-600 px-4 py-2 text-white rounded-md hover:bg-green-700 flex items-center gap-2"
+                disabled={subscribers.length === 0}
+              >
+                Export to CSV
+              </button>
+            </div>
+
+            {subscribers.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white border border-gray-200">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="py-3 px-4 text-left border-b font-semibold">Email</th>
+                      <th className="py-3 px-4 text-left border-b font-semibold">Subscribed Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {subscribers.map((sub, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="py-3 px-4 border-b">{sub.email}</td>
+                        <td className="py-3 px-4 border-b">
+                          {sub.subscribedAt
+                            ? new Date(sub.subscribedAt.seconds * 1000).toLocaleDateString()
+                            : "Unknown"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className="text-gray-500 italic">No subscribers found. Click &quot;Load Subscribers&quot; to fetch data.</p>
+            )}
+          </div>
+        );
+
       case "settings":
         return (
           <div className="bg-white p-6 shadow-md rounded-md">
@@ -206,9 +307,8 @@ const Admin = () => {
     <div className="flex h-screen">
       {/* Sidebar */}
       <aside
-        className={`bg-gray-900 text-white w-64 p-5 fixed h-full transition-transform transform ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-64"
-        } md:translate-x-0`}
+        className={`bg-gray-900 text-white w-64 p-5 fixed h-full z-10 transition-transform transform ${sidebarOpen ? "translate-x-0" : "-translate-x-64"
+          } md:translate-x-0`}
       >
         <h2 className="text-2xl font-bold mb-6">Admin Panel</h2>
         <nav>
@@ -216,7 +316,7 @@ const Admin = () => {
             <li>
               <button
                 onClick={() => setView("upload")}
-                className="flex items-center px-4 py-2 w-full hover:bg-gray-700 rounded"
+                className={`flex items-center px-4 py-2 w-full hover:bg-gray-700 rounded ${view === 'upload' ? 'bg-blue-600' : ''}`}
               >
                 <FaUpload className="mr-2" /> Upload Sermon
               </button>
@@ -224,15 +324,23 @@ const Admin = () => {
             <li>
               <button
                 onClick={() => setView("users")}
-                className="flex items-center px-4 py-2 w-full hover:bg-gray-700 rounded"
+                className={`flex items-center px-4 py-2 w-full hover:bg-gray-700 rounded ${view === 'users' ? 'bg-blue-600' : ''}`}
               >
                 <FaUsers className="mr-2" /> Manage Users
               </button>
             </li>
             <li>
               <button
+                onClick={() => setView("newsletter")}
+                className={`flex items-center px-4 py-2 w-full hover:bg-gray-700 rounded ${view === 'newsletter' ? 'bg-blue-600' : ''}`}
+              >
+                <FaEnvelope className="mr-2" /> Newsletter List
+              </button>
+            </li>
+            <li>
+              <button
                 onClick={() => setView("settings")}
-                className="flex items-center px-4 py-2 w-full hover:bg-gray-700 rounded"
+                className={`flex items-center px-4 py-2 w-full hover:bg-gray-700 rounded ${view === 'settings' ? 'bg-blue-600' : ''}`}
               >
                 <FaCog className="mr-2" /> Settings
               </button>
@@ -242,7 +350,7 @@ const Admin = () => {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 p-6 ml-0 md:ml-64 w-full">
+      <div className="flex-1 p-6 ml-0 md:ml-64 w-full overflow-y-auto">
         {/* Toggle Sidebar Button (Mobile) */}
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
