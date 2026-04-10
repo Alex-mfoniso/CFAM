@@ -19,7 +19,7 @@ const Login = () => {
     try {
       await login(email, password);
       navigate("/");
-    } catch (err) {
+    } catch {
       setError("Failed to log in. Check your credentials.");
     } finally {
       setLoading(false);
@@ -49,7 +49,7 @@ const Login = () => {
     try {
       await resetPassword(email);
       setError("Password reset link sent! Check your inbox.");
-    } catch (err) {
+    } catch {
       setError("Failed to send password reset email.");
     }
   };
@@ -80,7 +80,7 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition disabled:opacity-50"
+            className="w-full button py-3"
             disabled={loading}
           >
             {loading ? "Logging in..." : "Login"}
@@ -104,7 +104,7 @@ const Login = () => {
         </button>
 
         <p className="text-center mt-4">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link to="/signup" className="text-blue-600 hover:underline">
             Sign Up
           </Link>

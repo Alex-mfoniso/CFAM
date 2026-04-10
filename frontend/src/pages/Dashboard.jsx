@@ -1,20 +1,15 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { app } from "../firebase"; // Ensure you have firebase.js configured
-import { LogOut, Edit } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { assets } from "../assets/asset";
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
-  const [name, setName] = useState("");
   const [profilePic, setProfilePic] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [editMode, setEditMode] = useState(false);
 
   const db = getFirestore(app);
-  const storage = getStorage(app);
 
   // Fetch user details from Firestore
   useEffect(() => {
@@ -23,36 +18,15 @@ const Dashboard = () => {
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
           const data = userDoc.data();
-          setName(data.name || "");
           setProfilePic(data.profilePic || "");
         }
       }
     };
 
     fetchUserData();
-  }, [user]);
+  }, [user, db]);
 
-  // Handle profile picture upload
-  const handleFileUpload = async (file) => {
-    if (!file) return;
-    setLoading(true);
 
-    const storageRef = ref(storage, `profile_pics/${user.uid}`);
-    await uploadBytes(storageRef, file);
-    const downloadURL = await getDownloadURL(storageRef);
-
-    await updateDoc(doc(db, "users", user.uid), { profilePic: downloadURL });
-    setProfilePic(downloadURL);
-    setLoading(false);
-  };
-
-  // Save edited profile details
-  const handleSave = async () => {
-    setLoading(true);
-    await updateDoc(doc(db, "users", user.uid), { name });
-    setEditMode(false);
-    setLoading(false);
-  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
@@ -112,7 +86,7 @@ const Dashboard = () => {
         {/* Logout Button */}
         <button
           onClick={logout}
-          className="bg-red-500 text-white px-4 py-2 rounded w-full flex items-center justify-center gap-2"
+          className="w-full button py-3 gap-2"
         >
           <LogOut size={16} /> Logout
         </button>

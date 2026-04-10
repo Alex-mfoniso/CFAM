@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { assets } from "../assets/asset";
 
@@ -92,13 +91,13 @@ const EventSlider = () => {
           <div className="flex gap-4">
             <button
               onClick={handlePrev}
-              className="bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition"
+              className="bg-purple-700 text-white p-3 rounded-full shadow-lg hover:bg-purple-800 transition transform hover:scale-110"
             >
               <ChevronLeft size={24} />
             </button>
             <button
               onClick={handleNext}
-              className="bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition"
+              className="bg-purple-700 text-white p-3 rounded-full shadow-lg hover:bg-purple-800 transition transform hover:scale-110"
             >
               <ChevronRight size={24} />
             </button>
@@ -137,7 +136,7 @@ const EventSlider = () => {
         <div className="flex justify-center mt-8">
           <Link
             to="/events"
-            className="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+            className="button py-3 px-8 rounded-full"
           >
             Browse More Events
           </Link>

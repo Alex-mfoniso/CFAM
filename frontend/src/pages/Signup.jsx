@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { registerAdmin } from "../registerAdmin";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -56,7 +55,7 @@ const Signup = () => {
       }, { merge: true }); // Use merge so existing roles aren't overwritten
 
       navigate("/dashboard");
-    } catch (err) {
+    } catch {
       setError("❌ Google sign-up failed.");
     }
   };
@@ -95,7 +94,7 @@ const Signup = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+            className="w-full button py-3"
           >
             Sign Up
           </button>

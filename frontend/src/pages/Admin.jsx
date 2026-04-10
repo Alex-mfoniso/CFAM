@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { db, storage, auth } from "../firebase";
-import { collection, addDoc, getDoc, doc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
+import { collection, addDoc, getDoc, doc, serverTimestamp, query, getDocs } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaHome, FaUpload, FaUsers, FaCog, FaBars, FaEnvelope } from "react-icons/fa"; // Icons from react-icons
+import { FaUpload, FaUsers, FaCog, FaBars, FaEnvelope } from "react-icons/fa"; // Icons from react-icons
 
 const Admin = () => {
   const [title, setTitle] = useState("");
@@ -201,7 +201,7 @@ const Admin = () => {
             {uploadProgress > 0 && (
               <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
                 <div
-                  className="bg-blue-600 h-2.5 rounded-full"
+                  className="bg-purple-600 h-2.5 rounded-full"
                   style={{ width: `${uploadProgress}%` }}
                 ></div>
               </div>
@@ -209,7 +209,7 @@ const Admin = () => {
             <button
               onClick={uploadSermon}
               disabled={isLoading}
-              className={`bg-blue-600 px-4 py-2 text-white rounded-md hover:bg-blue-700 ${isLoading ? "opacity-50 cursor-not-allowed" : ""
+              className={`button py-2.5 px-6 ${isLoading ? "opacity-50" : ""
                 }`}
             >
               {isLoading ? "Uploading..." : "Upload Sermon"}
@@ -223,7 +223,7 @@ const Admin = () => {
             <h2 className="text-2xl font-bold mb-4">Manage Users</h2>
             <button
               onClick={fetchUsers}
-              className="bg-blue-600 px-4 py-2 text-white rounded-md hover:bg-blue-700 mb-4"
+              className="button py-2 px-6 mb-4"
             >
               Refresh Users
             </button>
@@ -247,14 +247,14 @@ const Admin = () => {
             <div className="flex gap-4 mb-6">
               <button
                 onClick={fetchSubscribers}
-                className="bg-blue-600 px-4 py-2 text-white rounded-md hover:bg-blue-700"
+                className="button py-2 px-6"
               >
                 Load Subscribers
               </button>
 
               <button
                 onClick={exportToCSV}
-                className="bg-green-600 px-4 py-2 text-white rounded-md hover:bg-green-700 flex items-center gap-2"
+                className="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-md hover:bg-purple-200 flex items-center gap-2 border border-purple-200 transition-all"
                 disabled={subscribers.length === 0}
               >
                 Export to CSV
@@ -316,7 +316,7 @@ const Admin = () => {
             <li>
               <button
                 onClick={() => setView("upload")}
-                className={`flex items-center px-4 py-2 w-full hover:bg-gray-700 rounded ${view === 'upload' ? 'bg-blue-600' : ''}`}
+                className={`flex items-center px-4 py-2 w-full hover:bg-gray-700 rounded transition-colors ${view === 'upload' ? 'bg-purple-700' : ''}`}
               >
                 <FaUpload className="mr-2" /> Upload Sermon
               </button>
@@ -324,7 +324,7 @@ const Admin = () => {
             <li>
               <button
                 onClick={() => setView("users")}
-                className={`flex items-center px-4 py-2 w-full hover:bg-gray-700 rounded ${view === 'users' ? 'bg-blue-600' : ''}`}
+                className={`flex items-center px-4 py-2 w-full hover:bg-gray-700 rounded transition-colors ${view === 'users' ? 'bg-purple-700' : ''}`}
               >
                 <FaUsers className="mr-2" /> Manage Users
               </button>
@@ -332,7 +332,7 @@ const Admin = () => {
             <li>
               <button
                 onClick={() => setView("newsletter")}
-                className={`flex items-center px-4 py-2 w-full hover:bg-gray-700 rounded ${view === 'newsletter' ? 'bg-blue-600' : ''}`}
+                className={`flex items-center px-4 py-2 w-full hover:bg-gray-700 rounded transition-colors ${view === 'newsletter' ? 'bg-purple-700' : ''}`}
               >
                 <FaEnvelope className="mr-2" /> Newsletter List
               </button>
@@ -340,7 +340,7 @@ const Admin = () => {
             <li>
               <button
                 onClick={() => setView("settings")}
-                className={`flex items-center px-4 py-2 w-full hover:bg-gray-700 rounded ${view === 'settings' ? 'bg-blue-600' : ''}`}
+                className={`flex items-center px-4 py-2 w-full hover:bg-gray-700 rounded transition-colors ${view === 'settings' ? 'bg-purple-700' : ''}`}
               >
                 <FaCog className="mr-2" /> Settings
               </button>
@@ -354,7 +354,7 @@ const Admin = () => {
         {/* Toggle Sidebar Button (Mobile) */}
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="md:hidden p-2 bg-gray-800 text-white rounded mb-4"
+          className="md:hidden p-2 bg-purple-700 text-white rounded mb-4"
         >
           <FaBars />
         </button>

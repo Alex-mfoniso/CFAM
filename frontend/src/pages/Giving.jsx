@@ -21,7 +21,7 @@ const Giving = () => {
   const [frequency, setFrequency] = useState("one-time");
   const [paymentMethod, setPaymentMethod] = useState("paystack");
   const [donations, setDonations] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [reason, setReason] = useState("");
   const [showHistory, setShowHistory] = useState(true);
 
@@ -127,7 +127,7 @@ const Giving = () => {
           {suggestedAmounts.map((amt) => (
             <button
               key={amt}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+              className={`px-4 py-2 rounded-lg font-bold transition-all ${amount === amt ? 'bg-purple-700 text-white shadow-inner' : 'bg-purple-100 text-purple-700 hover:bg-purple-200'}`}
               onClick={() => setAmount(amt)}
             >
               ₦{amt}
@@ -184,7 +184,7 @@ const Giving = () => {
           <option value="paystack">Paystack (Local Payments)</option>
         </select>
 
-        <button className="flex items-center justify-center bg-gray-200 py-2 px-4 rounded-md w-full mb-4">
+        <button className="flex items-center justify-center bg-purple-50 text-purple-700 border border-purple-100 py-3 px-4 rounded-xl w-full mb-4 hover:bg-purple-100 transition-colors">
           <QrCode className="w-5 h-5 mr-2" />
           Generate QR Code
         </button>
@@ -192,7 +192,7 @@ const Giving = () => {
         <button
           onClick={handleDonate}
           disabled={!amount || !user || loading}
-          className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 disabled:bg-gray-400"
+          className="w-full button py-4 font-bold"
         >
           {loading ? "Processing..." : "Donate Now"}
         </button>
@@ -212,7 +212,7 @@ const Giving = () => {
   {showHistory && (
     <div className="bg-white p-4 shadow-md rounded-lg">
       {donations.length === 0 ? (
-        <p className="text-gray-500 text-center">You haven't made any donations yet.</p>
+        <p className="text-gray-500 text-center">You haven&apos;t made any donations yet.</p>
       ) : (
         <ul className="space-y-3">
           {donations.map((donation) => (

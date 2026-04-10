@@ -94,7 +94,7 @@ const ChurchPage = () => {
             amet nunc turpis diam urna quam congue. Tortor in egestas imperdiet
             posuere duis enim lectus consectetur arcu ac id in mauris.
           </p>
-          <button className="bg-black text-white py-3 px-6 font-bold rounded-md hover:scale-105 hover:bg-gray-900 transition-all duration-300">
+          <button className="button py-3 px-8">
             STATEMENT OF FAITH
           </button>
         </motion.div>
@@ -158,7 +158,7 @@ const ChurchPage = () => {
             amet nunc turpis diam urna quam congue. Tortor in egestas imperdiet
             posuere duis enim lectus consectetur arcu ac id in mauris.
           </p>
-          <button className="bg-black text-white py-3 px-6 font-bold rounded-md hover:scale-105 hover:bg-gray-900 transition-all duration-300">
+          <button className="button py-3 px-8">
             MORE ABOUT US
           </button>
         </motion.div>

@@ -1,16 +1,6 @@
-import { useState } from "react";
 import { FaFacebook, FaInstagram, FaTiktok, FaEnvelope, FaPhone } from "react-icons/fa";
 
 const Contact = () => {
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
-
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert("Message Sent!");
-  };
-
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-6">
       <div className="max-w-4xl w-full bg-white p-8 rounded-lg shadow-lg">
@@ -33,7 +23,7 @@ const Contact = () => {
     <label className="block text-gray-700 font-medium mb-2">Message</label>
     <textarea name="message" className="w-full p-3 border rounded-lg" placeholder="Your Message" rows="4" required></textarea>
   </div>
-  <button type="submit" className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition">
+  <button type="submit" className="w-full button py-3">
     Send Message
   </button>
 </form>

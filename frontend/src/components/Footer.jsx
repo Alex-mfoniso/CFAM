@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Facebook, Twitter, Instagram, Youtube, MapPin, Phone, Mail } from "lucide-react";
 import { motion } from "framer-motion";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
@@ -37,7 +37,8 @@ const Footer = () => {
       initial={{ opacity: 0, y: 50 }} 
       animate={{ opacity: 1, y: 0 }} 
       transition={{ duration: 0.8 }}
-      className="bg-gray-900 text-white"
+      className="text-white"
+      style={{ background: 'rgb(24, 24, 27)' }} // Neutral Charcoal
     >
       <div className="max-w-7xl mx-auto py-12 px-6 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
         {/* Contact Information */}
@@ -51,7 +52,7 @@ const Footer = () => {
           <p className="flex items-center justify-center md:justify-start text-gray-400 mt-2"><Phone className="mr-2" size={20} />+234 911 356 2352</p>
           <p className="flex items-center justify-center md:justify-start text-gray-400 mt-2"><Mail className="mr-2" size={20} /> cfam@gmail.com</p>
         </motion.div>
-
+ 
         {/* Subscribe to Newsletter */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }} 
@@ -66,14 +67,14 @@ const Footer = () => {
               placeholder="Enter your email" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="p-3 w-full rounded-md pr-28 bg-white text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="p-3 w-full rounded-md pr-32 bg-white text-black focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             />
             <button 
               type="submit"
               disabled={isSubscribing}
-              className={`absolute top-1/2 right-2 transform -translate-y-1/2 px-4 py-2 font-bold rounded-md text-white transition-colors duration-200 ${
-                isSubscribing ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+              className={`absolute top-1/2 right-1.5 transform -translate-y-1/2 button py-2 px-4 text-sm ${
+                isSubscribing ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
               {isSubscribing ? 'Subscribing...' : 'Subscribe'}

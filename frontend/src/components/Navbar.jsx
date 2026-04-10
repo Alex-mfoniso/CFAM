@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, User, LogOut } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { assets } from "../assets/asset";
 import { useAuth } from "../contexts/AuthContext"; // Import Auth context
@@ -17,9 +17,9 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="shadow-md navbar">
+    <nav className="shadow-md navbar sticky top-0 z-50">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        
+
         {/* Logo */}
         <Link to="/" className="text-2xl font-bold text-blue-600">
           <img src={assets.logo} alt="Logo" className="w-16 sm:w-20 md:w-24 lg:w-20 xl:w-14 h-auto" />
@@ -38,7 +38,7 @@ const Navbar = () => {
           {!user ? (
             <>
               <Link to="/login" className="hover:text-blue-600">Login</Link>
-              <Link to="/signup" className="bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700 transition">
+              <Link to="/signup" className="hover:text-blue-600">
                 Sign Up
               </Link>
             </>
@@ -46,9 +46,9 @@ const Navbar = () => {
             <>
               <Link to="/dashboard" className="flex items-center gap-2 hover:text-blue-600">
                 <User className="w-6 h-6" />
-               Profile
+                Profile
               </Link>
-              <button 
+              <button
                 onClick={handleLogout}
                 className="text-red-600 hover:text-red-700 flex items-center gap-2"
               >
@@ -60,9 +60,9 @@ const Navbar = () => {
 
         {/* Mobile Menu Button */}
         <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
-          <motion.div 
-            initial={{ rotate: 0 }} 
-            animate={{ rotate: isOpen ? 180 : 0 }} 
+          <motion.div
+            initial={{ rotate: 0 }}
+            animate={{ rotate: isOpen ? 180 : 0 }}
             transition={{ duration: 0.3 }}
           >
             {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -92,7 +92,7 @@ const Navbar = () => {
               {!user ? (
                 <>
                   <Link to="/login" className="hover:text-blue-600" onClick={() => setIsOpen(false)}>Login</Link>
-                  <Link to="/signup" className="button px-4 py-2 rounded-md hover:bg-blue-700 transition text-left" onClick={() => setIsOpen(false)}>
+                  <Link to="/signup" className="hover:text-blue-600 text-left" onClick={() => setIsOpen(false)}>
                     Sign Up
                   </Link>
                 </>
@@ -100,9 +100,9 @@ const Navbar = () => {
                 <>
                   <Link to="/dashboard" className="hover:text-blue-600 flex items-center gap-2" onClick={() => setIsOpen(false)}>
                     <User className="w-6 h-6" />
-                  Profile
+                    Profile
                   </Link>
-                  <button   
+                  <button
                     onClick={handleLogout}
                     className="text-red-600 text-left w-full px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
                   >
