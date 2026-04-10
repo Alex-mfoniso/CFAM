@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
-import { CheckCircle, Lock, QrCode } from "lucide-react";
+import { CheckCircle, Lock, QrCode, ShieldCheck } from "lucide-react";
 import {
   addDoc,
   collection,
@@ -107,7 +107,7 @@ const Giving = () => {
   }, [user]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6 pt-24 pb-20">
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg">
         <h2 className="text-2xl font-bold text-center mb-4">
           Give to the Church
@@ -196,6 +196,11 @@ const Giving = () => {
         >
           {loading ? "Processing..." : "Donate Now"}
         </button>
+        
+        <p className="mt-6 flex items-center justify-center gap-2 text-gray-400 text-sm font-medium">
+          <ShieldCheck className="w-4 h-4 text-green-500" />
+          Secure online giving powered by <span className="text-purple-600 font-bold">Paystack</span>
+        </p>
       </div>
 
       <div className="mt-8 w-full max-w-lg">
